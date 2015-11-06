@@ -1,8 +1,14 @@
 (function () {
-  $.FollowToggle = function (el) {
+  $.FollowToggle = function (el, options) {
+    if (typeof options === "undefined"){
+      options = {
+        followState: false
+      }
+    }
     this.$el = $(el);
-    this.userId = this.$el.data("user-id");
-    if (this.$el.data("initial-follow-state")) {
+    this.userId = this.$el.data("user-id") || options.id;
+    this.followState = this.$el.data("initial-follow-state") || options.followState;
+    if (this.followState === true) {
       this.followState = "followed";
     }  else {
       this.followState = "unfollowed";
@@ -45,7 +51,7 @@
           context.render();
           context.$el.attr("disabled", false);
         },
-        failure: function(data){
+        error: function(data){
           console.log(data);
           context.render();
           context.$el.attr("disabled", false);
@@ -55,9 +61,9 @@
     }.bind(this));
   }
 
-  $.fn.followToggle = function () {
+  $.fn.followToggle = function (options) {
     return this.each(function () {
-      new $.FollowToggle(this);
+      new $.FollowToggle(this, options);
     });
   };
 }());
